@@ -5,35 +5,33 @@ from transformers import (
     AutoModelForCausalLM,
 )
 from peft import LoraConfig, get_peft_model, PeftModel
-import pandas as pd
-import time
-import random
 import argparse
+import gc
+import os
+import random
 import sys
+import time
 from pathlib import Path
 
 import pandas as pd
-import time
-import random
+import psutil
+import torch
 
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from eval_helpers import (
-    generate_all_jb_responses,
+from eval.eval_helpers import (
     classify_all_jb_safety,
-    generate_original_responses,
     classify_refusal,
+    generate_all_jb_responses,
+    generate_original_responses,
 )
-from train.model_profiles import (  # noqa: E402
+from model_profiles import (
     DEFAULT_MODEL_PROFILE,
     MODEL_PROFILE_CHOICES,
     resolve_profile,
 )
-import os
-import gc
-import psutil, torch
 
 print(f"CPU RAM available: {psutil.virtual_memory().available / 1e9:.1f}G")
 try:
@@ -223,7 +221,7 @@ if __name__ == "__main__":
         "--model-profile",
         default=os.environ.get("MODEL_PROFILE", DEFAULT_MODEL_PROFILE),
         choices=list(MODEL_PROFILE_CHOICES),
-        help="Selects base LLM + default eval judges (train/model_profiles.py).",
+        help="Selects base LLM + default eval judges (model_profiles.py).",
     )
     parser.add_argument(
         "--base-llm",
@@ -232,23 +230,23 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--validation-data",
-        default = "/home/taegyoem/scratch/dp-llm-experiments/official_data/validation.csv",
-        help = "path to csv containing validation data"
+        default=str(_REPO_ROOT / "data" / "eval" / "harmful_validation.csv"),
+        help="Harmful eval CSV (GCG/AutoDAN/PAIR variant columns).",
     )
     parser.add_argument(
         "--benign-validation-data",
-        default = "/home/taegyoem/scratch/dp-llm-experiments/official_data/frr_validation.csv",
-        help = "path to csv containing benign validation data for FRR metric"
+        default=str(_REPO_ROOT / "data" / "eval" / "frr_validation.csv"),
+        help="Benign prompts CSV with an Original Prompt column.",
     )
     parser.add_argument(
         "--harmful-output-file",
-        default = "harmful_output",
-        help = "path to csv output that looks the same as validation.csv but with jb responses and safety labels"
+        default=str(_REPO_ROOT / "outputs" / "harmful_eval"),
+        help="Output path prefix for harmful eval CSV (writes <prefix>.csv).",
     )
     parser.add_argument(
         "--benign-output-file",
-        default = "benign_output",
-        help = "path to csv output that looks the same as frr_validation.csv but with responses and safety labels"
+        default=str(_REPO_ROOT / "outputs" / "benign_eval"),
+        help="Output path prefix for benign eval CSV (writes <prefix>.csv).",
     )
     parser.add_argument(
         "--system-prompt-mode",

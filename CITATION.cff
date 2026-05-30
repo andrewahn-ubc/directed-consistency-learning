@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+title: "Directed Consistency Learning for Robust LLM Alignment Against Adversarial Jailbreaks"
+authors:
+  - family-names: Ahn
+    given-names: Andrew
+repository-code: "https://github.com/andrewahn-ubc/directed-consistency-learning"
+license: MIT
+preferred-citation:
+  type: conference-paper
+  title: "Directed Consistency Learning for Robust LLM Alignment Against Adversarial Jailbreaks"
+  authors:
+    - family-names: Ahn
+      given-names: Andrew
+  collection-title: "Advances in Neural Information Processing Systems"
+  year: 2026
+  notes: "Under review."
