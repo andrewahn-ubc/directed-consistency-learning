@@ -13,9 +13,6 @@ Anonymous review URL (paper): https://anonymous.4open.science/r/directed-consist
 | **Evaluation CSVs** | [`data/eval/`](data/eval/) |
 | **Training** | [`train.py`](train.py) |
 | **Evaluation** | [`eval/eval.py`](eval/eval.py) |
-| **LoRA adapters** + model card | [`models/README.md`](models/README.md) — upload to HF; replace `TBD` links ([guide](RELEASING.md)) |
-
-Paper PDF: [`paper/submission.pdf`](paper/submission.pdf).
 
 ## Install
 
