@@ -8,6 +8,7 @@ Anonymous review URL (paper): https://anonymous.4open.science/r/directed-consist
 
 | Asset | Location |
 |-------|----------|
+| **DCL LoRA** (Llama-2-7B-Chat, seen-family, λ=0.1, ε=1) | [anon7302/dcl-llama2-7b-lr2e-5-lam0.1-eps1](https://huggingface.co/anon7302/dcl-llama2-7b-lr2e-5-lam0.1-eps1) · [`models/README.md`](models/README.md) |
 | **MaliciousInstruct++** (1k goals) + data card | [`data/MaliciousInstruct++/`](data/MaliciousInstruct%2B%2B/) |
 | **Full training corpus** (~3k + variants) | [`data/train/`](data/train/) |
 | **Evaluation CSVs** | [`data/eval/`](data/eval/) |
@@ -21,6 +22,8 @@ pip install -r requirements.txt
 huggingface-cli login
 ```
 
+Accept the [Llama 2 license](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) before loading the base model or published adapter.
+
 ## Train (DCL)
 
 Default table: `data/train/train_plus_validation.csv` (2,996 rows with GCG / AutoDAN / PAIR neighbours).
@@ -32,7 +35,7 @@ python train.py \
   --finetuned-llm-path ./checkpoints/dcl \
   --lr 2e-5 \
   --lambda-val 0.1 \
-  --epsilon -1.0 \
+  --epsilon 1.0 \
   --lm-loss-input clean \
   --total-epochs 5 \
   --start-epoch 1
@@ -46,15 +49,19 @@ See [`data/train/README.md`](data/train/README.md).
 
 ## Evaluate
 
+Reproduce paper metrics with the released seen-family adapter:
+
 ```bash
 mkdir -p outputs
 python eval/eval.py \
   --model-profile llama_2_7b_chat \
-  --resume-from ./checkpoints/dcl_epoch5 \
+  --resume-from anon7302/dcl-llama2-7b-lr2e-5-lam0.1-eps1 \
   --validation-data data/eval/harmful_validation.csv \
   --benign-validation-data data/eval/frr_validation.csv \
   --eval-mode seen-family
 ```
+
+To evaluate a locally trained checkpoint, set `--resume-from` to your adapter directory (e.g. `./checkpoints/dcl_epoch5`).
 
 **Test benchmarks** (AdvBench / HarmBench / JailbreakBench): use `data/eval/combined_test_dataset.csv`.
 
@@ -69,7 +76,7 @@ eval/eval.py, eval/eval_helpers.py
 data/train/              # train.csv, validation.csv, train_plus_validation.csv
 data/eval/               # harmful + benign eval splits
 data/MaliciousInstruct++/
-models/                  # model card + HF adapter URLs
+models/                  # model card (mirrors HF README)
 scripts/
 ```
 

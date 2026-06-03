@@ -13,10 +13,10 @@
 mkdir -p outputs
 python eval/eval.py \
   --model-profile llama_2_7b_chat \
-  --resume-from ./checkpoints/dcl_epoch5 \
+  --resume-from anon7302/dcl-llama2-7b-lr2e-5-lam0.1-eps1 \
   --validation-data data/eval/harmful_validation.csv \
   --benign-validation-data data/eval/frr_validation.csv \
   --eval-mode seen-family
 ```
 
-For **test-benchmark** ASR (AdvBench / HarmBench / JBB), point `--validation-data` at `data/eval/combined_test_dataset.csv` and slice by `dataset` when aggregating (or use the paper’s full eval matrix scripts if restored).
+For **test-benchmark** ASR (AdvBench / HarmBench / JBB), point `--validation-data` at `data/eval/combined_test_dataset.csv` and slice by `dataset` when aggregating.
